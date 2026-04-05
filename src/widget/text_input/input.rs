@@ -907,6 +907,7 @@ where
                 // Enable custom buttons defined on the trailing icon position to be handled.
                 if !self.is_editable_variant {
                     if let Some(trailing_layout) = trailing_icon_layout {
+                        let was_not_captured = !shell.is_event_captured();
                         let res = trailing_icon.as_widget_mut().update(
                             tree,
                             event,
@@ -918,7 +919,7 @@ where
                             viewport,
                         );
 
-                        if shell.is_event_captured() {
+                        if was_not_captured && shell.is_event_captured() {
                             return;
                         }
                     }
