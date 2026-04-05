@@ -2096,7 +2096,7 @@ pub fn update<'a, Message: Clone + 'static>(
                     return;
                 }
                 input_method::Event::Preedit(content, selection) => {
-                    if state.is_focused.is_some() {
+                    if state.is_focused() {
                         state.preedit = Some(input_method::Preedit {
                             content: content.to_owned(),
                             selection: selection.clone(),
@@ -2107,7 +2107,7 @@ pub fn update<'a, Message: Clone + 'static>(
                     }
                 }
                 input_method::Event::Commit(text) => {
-                    let Some(focus) = &mut state.is_focused else {
+                    let Some(focus) = state.is_focused.as_mut().filter(|f| f.focused) else {
                         return;
                     };
                     let Some(on_input) = on_input else {
@@ -2338,8 +2338,7 @@ fn input_method<'b>(
     text_layout: Layout<'_>,
     value: &Value,
 ) -> InputMethod<&'b str> {
-    if state.is_focused() {
-    } else {
+    if !state.is_focused() {
         return InputMethod::Disabled;
     };
 
